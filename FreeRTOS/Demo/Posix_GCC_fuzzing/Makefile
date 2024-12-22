@@ -124,6 +124,10 @@ ifeq ($(USER_DEMO),FUZZ_DEMO)
   CPPFLAGS            +=   -DUSER_DEMO=2
 endif
 
+ifdef NO_STRINGS
+  CFLAGS              +=  -DNO_STRINGS
+endif
+
 OBJ_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 
 DEP_FILE = $(OBJ_FILES:%.o=%.d)

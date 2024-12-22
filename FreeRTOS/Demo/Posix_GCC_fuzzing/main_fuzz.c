@@ -172,10 +172,11 @@ int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
         return 0;
 
 	/* Test xTaskCreate with fuzzed naming */
-	xTaskCreate(nondet_task_function, (char *) &data[idx], uxStackDepth, NULL, uxPriority, NULL);
-
+    #ifndef NO_STRINGS
+	    xTaskCreate(nondet_task_function, (char *) &data[idx], uxStackDepth, NULL, uxPriority, NULL);
+    #endif
 	/* Test xTaskCreate with fuzzed "parameters" */
-	xTaskCreate(nondet_task_function, NULL, uxStackDepth, (void *)&data[idx], uxPriority, NULL);
+	xTaskCreate(nondet_task_function, "default_string", uxStackDepth, (void *)&data[idx], uxPriority, NULL);
 	return 0;
 
 }		
