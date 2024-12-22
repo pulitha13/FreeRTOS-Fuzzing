@@ -60,6 +60,7 @@ READ of size 1 at 0x50200000889e thread T0
 Upon further inspection of the codebase, it looks like that function does not handle the case where the passed in
 `char *` in not NULL terminated which is what lead to this particular address sanitization error.
 
+![alt text](images/prvInitialise.png)
 
 We then added an option to skip fuzzing the string input (-DNO_STRING in main_fuzz.c) to check for any other potential undefined behavior. With these runs libfuzzer was not able to detect any out of memory accesses or undefined behavior. Example output for those runs is below.
 

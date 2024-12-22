@@ -52,7 +52,6 @@ __pycache__/
 *.atsuo
 
 # Image Files
-*.png
 *.jpg
 *.jpeg
 
