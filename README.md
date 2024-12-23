@@ -2,7 +2,7 @@
 
 This is a fork of the open source FreeRTOS code base that can be found here. This repository adds a demo that performs fuzzing on certain api functions to validate memory safety and detect potential undefined behavior.
 
-To run, make sure you execute the general setup below and then change directories into `FreeRTOS/Demo/Posix_GCC_fuzzing`, and follow the README located there.
+To run, make sure you execute the general setup below and then change directories into `FreeRTOS/Demo/Posix_GCC_fuzzing`, and follow the [README located there](FreeRTOS/Demo/Posix_GCC_fuzzing/Readme.md).
 
 ## General setup
 
