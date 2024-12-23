@@ -3,7 +3,8 @@
 ## Build
 
 ```
-make PROFILE=1 SANITIZE_FUZZER=1 USER_DEMO=FUZZ_DEMO SANITIZE_ADDRESS=1
+# For last argument TEST_1, TEST_2, TEST_3 are valid
+make PROFILE=1 SANITIZE_FUZZER=1 USER_DEMO=FUZZ_DEMO SANITIZE_ADDRESS=1 SANITIZE_LEAK=1 FUZZ_TEST=TEST_1
 ```
 
 ## Execution 
@@ -15,6 +16,16 @@ cd build
 
 ## Analysis
 
+Description of each test:
+* TEST_1: This fuzzes the xTaskCreate & vTaskDelete function with fuzzing inputs
+    * uname (string representing task name)
+    * stack_depth (size of task's stack)
+    * priority (scheduling priority)
+* TEST_2: This fuzzes the xTaskCreate & vTaskDelete function with fuzzing inputs
+    * pvParameters (pointer to user defined parameters)
+    * stack_depth (size of task's stack)
+    * priority (scheduling priority)
+* TEST_3: This fuzzes the vTaskPrioritySet function by fuzzing the initial and new priorities
 ### xTaskCreate
 
 This function has the following signature
@@ -94,3 +105,4 @@ INFO: A corpus is not provided, starting from an empty corpus
 
 ```
 
+TODO: ADD other functions later!!
