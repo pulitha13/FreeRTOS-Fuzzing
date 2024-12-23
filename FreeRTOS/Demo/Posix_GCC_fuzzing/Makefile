@@ -128,6 +128,18 @@ ifdef NO_STRINGS
   CFLAGS              +=  -DNO_STRINGS
 endif
 
+ifeq ($(FUZZ_TEST),TEST_1)
+  CPPFLAGS            +=   -DTEST_1=1
+endif
+
+ifeq ($(FUZZ_TEST),TEST_2)
+  CPPFLAGS            +=   -DTEST_2=1
+endif
+
+ifeq ($(FUZZ_TEST),TEST_3)
+  CPPFLAGS            +=   -DTEST_3=1
+endif
+
 OBJ_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 
 DEP_FILE = $(OBJ_FILES:%.o=%.d)

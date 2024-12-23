@@ -73,6 +73,7 @@
 #endif
 
 #define MAX_STACK_DEPTH 1028 * 1028
+#define NUM_TASKS 10
 
 #ifdef BUILD_DIR
     #define BUILD         BUILD_DIR
@@ -151,7 +152,10 @@ void nondet_task_function(void *pvParameters) {
 	/* Spin */
     }
 }
+#define TEST_1
+#if defined(TEST_1)
 
+/* This is the fuzzing test for the xTaskCreate function */
 int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) 
 {
 	if (size < sizeof(configSTACK_DEPTH_TYPE) + sizeof(UBaseType_t))
@@ -159,6 +163,8 @@ int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 
 	configSTACK_DEPTH_TYPE uxStackDepth;
 	UBaseType_t uxPriority;	
+    TaskHandle_t taskHandle;
+
 
 	size_t idx = 0;
 	
@@ -173,14 +179,69 @@ int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 
 	/* Test xTaskCreate with fuzzed naming */
     #ifndef NO_STRINGS
-	    xTaskCreate(nondet_task_function, (char *) &data[idx], uxStackDepth, NULL, uxPriority, NULL);
+	    xTaskCreate(nondet_task_function, (char *) &data[idx], uxStackDepth, NULL, uxPriority, &taskHandle);
     #endif
 	/* Test xTaskCreate with fuzzed "parameters" */
-	xTaskCreate(nondet_task_function, "default_string", uxStackDepth, (void *)&data[idx], uxPriority, NULL);
+	xTaskCreate(nondet_task_function, "default_string", uxStackDepth, (void *)&data[idx], uxPriority, &taskHandle);
+	vTaskDelete(taskHandle);
+    return 0;
+
+}		
+
+#elif defined(TEST_2)
+
+/* This is a test for the vListInsertEnd function which is used in many scheduling activities */
+typedef tskTCB TCB_t;
+int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) 
+{
+	if (size < sizeof(TCB_t) * NUM_TASKS)
+		return 0;
+
+	size_t idx = 0;
+
+    TCB_t tasks[NUM_TASKS];
+    List_t readyList;
+    vListInitialise(&(readyList)); // Initialize ready lists
+
+    for (int i = 0; i < NUM_TASKS; i++) {
+
+        memcpy(&tasks[i], &data[idx], sizeof(TCB_t));
+        idx += sizeof(TCB_t);
+
+        vListInsertEnd(&(readyList), &(tasks[i].xStateListItem));
+    }
+
 	return 0;
 
 }		
 
+#elif defined(TEST_3)
+
+int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) 
+{
+	if (size != sizeof(UBaseType_t))
+		return 0;
+
+    TaskHandle_t taskHandle = nondet_task_function;
+    UBaseType_t uxNewPriority;
+    UBaseType_t *ptr = (UBaseType_t *) data;
+	uxNewPriority = *ptr;
+
+    BaseType_t ret = xTaskCreate( nondet_task_function, "Sample_Task", 1000, NULL, uxNewPriority, &taskHandle ); 
+    
+    if (ret != pdPASS)
+        return 0;
+
+    vTaskPrioritySet(taskHandle, uxNewPriority);
+    
+    if (ret == pdPASS)
+        vTaskDelete( taskHandle );
+
+	return 0;
+
+}		
+
+# endif
 /*-----------------------------------------------------------*/
 
 void vApplicationMallocFailedHook( void )
