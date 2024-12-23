@@ -13,3 +13,9 @@ Install the FreeRTOS source code
 git submodule init
 git submodule update
 ```
+
+Install clang
+```
+sudo apt update
+sudo apt install clang
+```
