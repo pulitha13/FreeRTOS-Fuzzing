@@ -26,7 +26,8 @@ Description of each test:
     * stack_depth (size of task's stack)
     * priority (scheduling priority)
 * TEST_3: This fuzzes the vTaskPrioritySet function by fuzzing the initial and new priorities
-### xTaskCreate
+
+### xTaskCreate & vTaskDelete
 
 This function has the following signature
 ```
@@ -73,7 +74,7 @@ Upon further inspection of the codebase, it looks like that function does not ha
 
 ![alt text](images/prvInitialise.png)
 
-We then added an option to skip fuzzing the string input (-DNO_STRING in main_fuzz.c) to check for any other potential undefined behavior. With these runs libfuzzer was not able to detect any out of memory accesses or undefined behavior. Example output for those runs is below.
+We then added a test that skips fuzzing the string input (-FUZZ_TEST=TEST_2) to check for any other potential undefined behavior. With these runs libfuzzer was not able to detect any out of memory accesses or undefined behavior. Example output for those runs is below.
 
 ```
 ➜  build git:(main) ✗ ./fuzz_demo -max_len=256 -workers=2 -jobs=4
@@ -105,4 +106,5 @@ INFO: A corpus is not provided, starting from an empty corpus
 
 ```
 
-TODO: ADD other functions later!!
+Analyzing vTaskPrioritySet had similar runs to the above
+
